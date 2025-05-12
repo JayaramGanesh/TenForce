@@ -185,5 +185,59 @@ namespace Test_Taste_Console_Application.Domain.Services
                 --------------------+--------------------------------------------------
             */
         }
+
+        public void OutputPlanetsAndTheirOneMoonToConsolse()
+        {
+            var planets = _planetService.GetAllPlanetsAllMoons().ToArray();
+
+            //If the planets aren't found, then the function stops and tells that to the user via the console.
+            if (!planets.Any())
+            {
+                Console.WriteLine(OutputString.NoPlanetsFound);
+                return;
+            }
+
+            //The column sizes and labels for the planets are configured here. 
+            var columnSizesForPlanets = new[] { 20, 20, 20, 20, 20 };
+            var columnLabelsForPlanets = new[]
+            {
+                OutputString.PlanetNumber, OutputString.PlanetId, OutputString.PlanetSemiMajorAxis,
+                OutputString.TotalMoons, OutputString.PlanetMoonTempAvg,
+            };
+
+            var planetMoonAvgTemp = 0.0;
+            //The for loop creates the correct output.
+            for (int i = 0, j = 1; i < planets.Length; i++, j++)
+            {
+                for (int k = 0; k < planets[i].Moons.Count; k++)
+                {
+                    foreach (var moon in planets[i].Moons)
+                    {
+                        planetMoonAvgTemp += moon.AverageMoonTemperature;
+                    }
+                }
+                //First the line is created.
+                ConsoleWriter.CreateLine(columnSizesForPlanets);
+
+                //Under the line the header is created.
+                ConsoleWriter.CreateText(columnLabelsForPlanets, columnSizesForPlanets);
+
+                //Under the header the planet data is shown.
+                ConsoleWriter.CreateText(
+                    new[]
+                    {
+                        j.ToString(), CultureInfoUtility.TextInfo.ToTitleCase(planets[i].Id),
+                        planets[i].SemiMajorAxis.ToString(),
+                        planets[i].Moons.Count.ToString(),
+                        planetMoonAvgTemp.ToString(),
+                    },
+                    columnSizesForPlanets);
+
+                //Under the planet data the header for the moons is created.
+                ConsoleWriter.CreateLine(columnSizesForPlanets);
+                
+
+            }
+        }
     }
 }
