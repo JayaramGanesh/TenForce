@@ -210,13 +210,10 @@ namespace Test_Taste_Console_Application.Domain.Services
             //The for loop creates the correct output.
             for (int i = 0, j = 1; i < planets.Length; i++, j++)
             {
-                for (int k = 0; k < planets[i].Moons.Count; k++)
+                foreach (var moon in planets[i].Moons)
                 {
-                    foreach (var moon in planets[i].Moons)
-                    {
-                        float avg = _moonService.GetMoon(moon.Id);
-                        planetMoonAvgTemp += avg;
-                    }
+                    float avg = _moonService.GetMoon(moon.Id);
+                    planetMoonAvgTemp += avg;
                 }
                 planetMoonAvgTemp /= planets[i].Moons.Count;
                 //First the line is created.
