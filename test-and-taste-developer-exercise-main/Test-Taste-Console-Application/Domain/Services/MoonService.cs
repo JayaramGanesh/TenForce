@@ -50,5 +50,30 @@ namespace Test_Taste_Console_Application.Domain.Services
 
             return allMoons;
         }
+        public float GetMoon(string id)
+        {
+            var allMoons = new MoonDto();
+            var avgTemp = 0.0f;
+            var response = _httpClientService.Client
+               .GetAsync(UriPath.BaseUri+ UriPath.BodiesUri + "/" + id)
+               .Result;
+
+            //If the status code isn't 200-299, then the function returns an empty collection.
+            if (!response.IsSuccessStatusCode)
+            {
+                Logger.Instance.Warn($"{LoggerMessage.GetRequestFailed}{response.StatusCode}");
+                return avgTemp;
+            }
+
+            var content = response.Content.ReadAsStringAsync().Result;
+
+            //The JSON converter uses DTO's, that can be found in the DataTransferObjects folder, to deserialize the response content.
+            MoonDto results = JsonConvert.DeserializeObject<MoonDto>(content);
+
+            //The JSON converter can return a null object. 
+            if (results == null) return avgTemp;
+
+            return results.AverageTemperature-273.15f;
+        }
     }
 }

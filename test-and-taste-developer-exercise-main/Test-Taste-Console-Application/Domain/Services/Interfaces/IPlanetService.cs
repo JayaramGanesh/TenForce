@@ -10,5 +10,7 @@ namespace Test_Taste_Console_Application.Domain.Services.Interfaces
     public interface IPlanetService
     {
         IEnumerable<Planet> GetAllPlanets();
+        IEnumerable<Planet> GetAllPlanetsAllMoons();
+        
     }
 }

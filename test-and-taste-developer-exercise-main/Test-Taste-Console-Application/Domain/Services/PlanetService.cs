@@ -68,6 +68,59 @@ namespace Test_Taste_Console_Application.Domain.Services
             return allPlanetsWithTheirMoons;
         }
 
+        public IEnumerable<Planet> GetAllPlanetsAllMoons()
+        {
+            var allPlanetsWithTheirMoons = new Collection<Planet>();
+
+            var response = _httpClientService.Client
+                .GetAsync(UriPath.GetAllPlanetsWithMoonsQueryParameters)
+                .Result;
+
+            //If the status code isn't 200-299, then the function returns an empty collection.
+            if (!response.IsSuccessStatusCode)
+            {
+                Logger.Instance.Warn($"{LoggerMessage.GetRequestFailed}{response.StatusCode}");
+                return allPlanetsWithTheirMoons;
+            }
+
+            var content = response.Content.ReadAsStringAsync().Result;
+
+            //The JSON converter uses DTO's, that can be found in the DataTransferObjects folder, to deserialize the response content.
+            var results = JsonConvert.DeserializeObject<JsonResult<PlanetDto>>(content);
+
+            //The JSON converter can return a null object. 
+            if (results == null) return allPlanetsWithTheirMoons;
+
+            //If the planet doesn't have any moons, then it isn't added to the collection.
+            foreach (var planet in results.Bodies)
+            {
+                if (planet.Moons != null)
+                {
+                    var newMoonsCollection = new Collection<MoonDto>();
+                    foreach (var moon in planet.Moons)
+                    {
+                        var moonResponse = _httpClientService.Client
+                            .GetAsync(UriPath.GetMoonByIdQueryParameters + moon.URLId)
+                            .Result;
+                        var moonContent = moonResponse.Content.ReadAsStringAsync().Result;
+                        newMoonsCollection.Add(JsonConvert.DeserializeObject<MoonDto>(moonContent));
+                    }
+                    planet.Moons = newMoonsCollection;
+
+                }
+                if(planet.Moons != null && planet.Moons.Count > 0)
+                {
+                    allPlanetsWithTheirMoons.Add(new Planet(planet));
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            return allPlanetsWithTheirMoons;
+        }
+
         private static string RemoveDiacritics(string text)
         {
             var normalizedString = text.Normalize(NormalizationForm.FormD);
