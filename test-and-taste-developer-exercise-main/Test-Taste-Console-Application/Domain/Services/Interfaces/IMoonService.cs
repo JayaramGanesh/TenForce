@@ -10,5 +10,6 @@ namespace Test_Taste_Console_Application.Domain.Services.Interfaces
     public interface IMoonService
     {
         IEnumerable<Moon> GetAllMoons();
+        float GetMoon(string id);
     }
 }

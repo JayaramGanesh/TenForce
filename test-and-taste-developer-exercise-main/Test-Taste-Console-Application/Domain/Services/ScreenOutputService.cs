@@ -188,6 +188,7 @@ namespace Test_Taste_Console_Application.Domain.Services
 
         public void OutputPlanetsAndTheirOneMoonToConsolse()
         {
+            Console.WriteLine("Planet with alteast 1 Moon");
             var planets = _planetService.GetAllPlanetsAllMoons().ToArray();
 
             //If the planets aren't found, then the function stops and tells that to the user via the console.
@@ -213,9 +214,11 @@ namespace Test_Taste_Console_Application.Domain.Services
                 {
                     foreach (var moon in planets[i].Moons)
                     {
-                        planetMoonAvgTemp += moon.AverageMoonTemperature;
+                        float avg = _moonService.GetMoon(moon.Id);
+                        planetMoonAvgTemp += avg;
                     }
                 }
+                planetMoonAvgTemp /= planets[i].Moons.Count;
                 //First the line is created.
                 ConsoleWriter.CreateLine(columnSizesForPlanets);
 

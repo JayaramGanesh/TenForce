@@ -11,5 +11,6 @@ namespace Test_Taste_Console_Application.Domain.Services.Interfaces
     {
         IEnumerable<Planet> GetAllPlanets();
         IEnumerable<Planet> GetAllPlanetsAllMoons();
+        
     }
 }
