@@ -206,10 +206,11 @@ namespace Test_Taste_Console_Application.Domain.Services
                 OutputString.TotalMoons, OutputString.PlanetMoonTempAvg,
             };
 
-            var planetMoonAvgTemp = 0.0;
+            
             //The for loop creates the correct output.
             for (int i = 0, j = 1; i < planets.Length; i++, j++)
             {
+                var planetMoonAvgTemp = 0.0;
                 foreach (var moon in planets[i].Moons)
                 {
                     float avg = _moonService.GetMoon(moon.Id);
